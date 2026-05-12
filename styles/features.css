@@ -93,6 +93,11 @@ body.dark-mode #stageHolder canvas {
 	background-color: rgba(255,255,255,0.15);
 }
 
+/* Dark mode: collapse buttons */
+body.dark-mode .collapse-button > div {
+	color: #aaa;
+}
+
 /* Find & Replace status colours */
 #find-replace-status.found {
 	color: #2780e3;
