@@ -18,6 +18,7 @@ body.dark-mode #editor-pane {
 }
 
 body.dark-mode #textArea {
+	background-color: #252525;
 	color: #ddd;
 	caret-color: #ddd;
 }
@@ -74,6 +75,18 @@ body.dark-mode form select {
 
 body.dark-mode form .control-label {
 	color: #bbb;
+}
+
+/* Dark mode: viewer pane background matches dark theme */
+body.dark-mode #viewer-pane,
+body.dark-mode #viewer-container,
+body.dark-mode #stageHolder {
+	background-color: #1e1e1e;
+}
+
+/* Dark mode: KineticJS canvas — force background so nodes show */
+body.dark-mode #stageHolder canvas {
+	background-color: #1e1e1e;
 }
 
 /* Dark mode toggle button active state */
