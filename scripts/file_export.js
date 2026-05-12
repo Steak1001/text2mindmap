@@ -1,7 +1,5 @@
 // Save a file to the user's local drive.
 fileExport = (function() {
-	// Convert some data to a file and save it to the user's local drive with
-	// the speficied filename and extension.
 	function saveFile(data, filename, extension) {
 	    const file = new Blob([data]);
 	    if (window.navigator.msSaveOrOpenBlob) {
@@ -19,8 +17,5 @@ fileExport = (function() {
 	        }, 0);
 	    }
 	}
-
-	return {
-		saveFile
-	};
+	return { saveFile };
 }());
