@@ -77,14 +77,13 @@ body.dark-mode form .control-label {
 	color: #bbb;
 }
 
-/* Dark mode: viewer pane background matches dark theme */
+/* Dark mode: viewer pane and canvas background */
 body.dark-mode #viewer-pane,
 body.dark-mode #viewer-container,
 body.dark-mode #stageHolder {
 	background-color: #1e1e1e;
 }
 
-/* Dark mode: KineticJS canvas — force background so nodes show */
 body.dark-mode #stageHolder canvas {
 	background-color: #1e1e1e;
 }
@@ -94,7 +93,7 @@ body.dark-mode #stageHolder canvas {
 	background-color: rgba(255,255,255,0.15);
 }
 
-/* Find highlight in textarea — visual indicator in status */
+/* Find & Replace status colours */
 #find-replace-status.found {
 	color: #2780e3;
 }
