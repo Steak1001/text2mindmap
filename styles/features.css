@@ -93,53 +93,9 @@ body.dark-mode #stageHolder canvas {
 	background-color: rgba(255,255,255,0.15);
 }
 
-/* Keyboard shortcuts help modal */
-.shortcuts-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 1em;
-	padding: 1em 0;
-}
-
-.shortcut-item {
-	display: flex;
-	align-items: center;
-	gap: 1em;
-}
-
-.shortcut-key {
-	display: inline-block;
-	min-width: 120px;
-	padding: 0.4em 0.6em;
-	background-color: #f0f0f0;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-	font-family: monospace;
-	font-size: 0.85em;
-	text-align: center;
-	font-weight: bold;
-}
-
-.shortcut-action {
-	flex: 1;
-	color: #333;
-}
-
-body.dark-mode .shortcut-key {
-	background-color: #3a3a3a;
-	border-color: #555;
-	color: #ddd;
-}
-
-body.dark-mode .shortcut-action {
-	color: #ddd;
-}
-
-/* Recent files menu */
-#recent-files-menu {
-	max-height: 200px;
-	overflow-y: auto;
-	padding: 5px 0;
+/* Dark mode: collapse buttons */
+body.dark-mode .collapse-button > div {
+	color: #aaa;
 }
 
 /* Find & Replace status colours */
