@@ -1,28 +1,14 @@
-// SVG export — saves the current mind map canvas as an SVG file.
-// Hooks into the existing fileExport module.
+// SVG export — saves the mind map canvas as an SVG-wrapped PNG.
+// Exposes exportSVGFeature() for navbar.js to call.
 (function() {
-	$(document).ready(function() {
-		// Register the navbar click
-		$('#file-save-svg').on('click', function(e) {
-			e.preventDefault();
-			exportSVG();
-		});
-
-		// Register Ctrl+E shortcut
-		shortcuts.addBinding('ctrl+e', exportSVG);
-	});
-
-	function exportSVG() {
-		// KineticJS renders to a <canvas>. Convert that canvas to SVG via data URL.
-		// We wrap the canvas image in an SVG <image> element for full fidelity.
+	window.exportSVGFeature = function() {
 		var canvas = document.querySelector('#stageHolder canvas');
 		if (!canvas) {
 			alert('Nothing to export yet — create a mind map first.');
 			return;
 		}
 		var dataURL = canvas.toDataURL('image/png');
-		var w = canvas.width;
-		var h = canvas.height;
+		var w = canvas.width, h = canvas.height;
 		var svgContent = [
 			'<?xml version="1.0" encoding="UTF-8"?>',
 			'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"',
@@ -32,5 +18,9 @@
 		].join('\n');
 		var title = (typeof documentTitle !== 'undefined') ? documentTitle.getTitle() : 'mindmap';
 		fileExport.saveFile(svgContent, title, '.svg');
-	}
+	};
+
+	$(document).ready(function() {
+		shortcuts.addBinding('ctrl+e', window.exportSVGFeature);
+	});
 }());

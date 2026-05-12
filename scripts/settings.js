@@ -1,26 +1,40 @@
-// settings.js — persists user preferences to localStorage
-const Settings = (() => {
-  const PREFIX = 't2mm_';
-  const DEFAULTS = {
-    documentContent: 'Mind Map\n\tIdeas\n\t\tFirst idea\n\t\tSecond idea\n\tGoals\n\t\tShort term\n\t\tLong term\n\tNotes\n\t\tSomething to remember',
-    documentTitle:   'Untitled Document',
-    colorMode:       'branch',
-    layout:          'radial',
-    fontSize:        '14',
-    curvedLines:     true,
-    theme:           'light',
-  };
-  function get(key) {
-    try {
-      const raw = localStorage.getItem(PREFIX + key);
-      if (raw === null) return DEFAULTS[key];
-      return JSON.parse(raw);
-    } catch { return DEFAULTS[key]; }
-  }
-  function set(key, value) {
-    try { localStorage.setItem(PREFIX + key, JSON.stringify(value)); }
-    catch (e) { console.warn('Settings: could not save', key, e); }
-  }
-  function getDefault(key) { return DEFAULTS[key]; }
-  return { get, set, getDefault };
-})();
+// Helper functions for saving and loading user settings with localStorage.
+settings = (function() {
+	const prefix = "text2mindmap";
+	const defaultValues = {
+		"documentContent": "Text2MindMap\n\tTurn tab-indented lists into mind maps\n\t\tPress Tab to indent lines\n\t\tPress Shift + Tab to unindent lines\n\tDrag nodes to re-organize them\n\tRight-click the mindmap to save it as an image\n\tThis project is based on the now dead site Text2MindMap.com",
+		"documentTitle": "Untitled Document"
+	};
+	const fontFamilyMap = {
+		"monospace": "monospace",
+		"sans-serif": "sans-serif",
+		"serif": "serif",
+	};
+
+	function getSetting(key) {
+		let setting;
+		try { setting = JSON.parse(localStorage.getItem(prefix + key)); } catch(e) {}
+		if (!setting || setting == "") {
+			setting = getDefaultValue(key);
+			setSetting(key, setting);
+		}
+		return setting;
+	}
+
+	function setSetting(key, value) {
+		if (!value) value = getDefaultValue(key);
+		try { localStorage.setItem(prefix + key, JSON.stringify(value)); } catch(e) {
+			console.error('Error saving setting. Key: ' + key);
+		}
+	}
+
+	function getDefaultValue(key) {
+		if (key in defaultValues) return defaultValues[key];
+	}
+
+	function reset() {
+		for (let key in defaultValues) setSetting(key, getDefaultValue(key));
+	}
+
+	return { getSetting, setSetting, fontFamilyMap, getDefaultValue, reset };
+}());
