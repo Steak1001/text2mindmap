@@ -36,6 +36,10 @@ body.dark-mode .dropdown-content a {
 	color: #ddd;
 }
 
+body.dark-mode .dropdown-shortcut {
+	color: #888;
+}
+
 body.dark-mode .dropdown-content li:not(.dropdown-divider):hover {
 	background-color: #2780e3;
 }

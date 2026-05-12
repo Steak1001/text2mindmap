@@ -100,10 +100,14 @@
 
 .dropdown-content a {
 	color: #333333;
-	-webkit-box-pack: start;
-	-ms-flex-pack: start;
-	justify-content: flex-start;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	padding-left: 9px;
+	padding-right: 9px;
+	width: 100%;
+	box-sizing: border-box;
+	gap: 1em;
 }
 
 .dropdown-content a:hover {
@@ -123,8 +127,10 @@
 
 .dropdown-shortcut {
 	color: #aaa;
-	position: absolute;
-	right: 20px;
+	font-size: 0.75em;
+	white-space: nowrap;
+	margin-left: auto;
+	flex-shrink: 0;
 }
 
 .navbar-logo {
