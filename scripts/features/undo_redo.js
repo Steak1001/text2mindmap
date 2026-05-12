@@ -105,21 +105,6 @@
 				lastSavedState = $textArea.val();
 			}, 100);
 		};
-
-		// Monitor file import by tracking significant content changes
-		// (when someone imports a file via file input)
-		const originalVal = $.fn.val;
-		$textArea.val = function(newVal) {
-			const result = originalVal.call(this, newVal);
-			if (typeof newVal === 'string' && newVal !== lastSavedState && isInitialized) {
-				// Large content change detected (likely file import)
-				if (Math.abs(newVal.length - lastSavedState.length) > 50) {
-					undoRedo.clear();
-					lastSavedState = newVal;
-				}
-			}
-			return result;
-		};
 	});
 
 	// Export for testing/debugging
