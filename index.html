@@ -1,176 +1,168 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en" data-theme="light">
 <head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-73558830-1"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'UA-73558830-1', { 'anonymize_ip': true });
-	</script>
-
-
-	<meta charset="utf-8">
-	<title>Text2MindMap</title>
-	<link rel="shortcut icon" type="image/png" href="favicon.png">
-
-	<link rel="stylesheet" href="styles/old/customstyles.css">
-	<link rel="stylesheet" href="styles/old/jquery-ui-1.10.3.custom.min.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.minicolors/2.0.4/jquery.minicolors.css"/>
-	<script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="styles/app.css?v=1.1">
-    <link rel="stylesheet" href="styles/navbar.css?v=1.1">
-    <link rel="stylesheet" href="styles/modal.css">
-    <link rel="stylesheet" href="styles/document_title.css">
-    <link rel="stylesheet" href="styles/editor.css">
-    <link rel="stylesheet" href="styles/viewer.css">
-    <link rel="stylesheet" href="styles/pane_resizer.css">
-	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.minicolors/2.0.4/jquery.minicolors.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
-    <script src="scripts/old/kineticjs.js"></script>
-    <script src="scripts/old/jquery.cookie.min.js"></script>
-    <script src="scripts/old/difflib.js"></script>
-
-	<script type="text/javascript">
-        var viewcode = "";
-        var admincode = "";
-        var map = "";
-        var savingState = "unsaved";
-        var isOldBrowser = false;
-        var isIE = false;
-        var logged_in = "";
-        var userid = "";
-        var user = "";
-    </script>
-    <script src="scripts/old/mindmap.min.js"></script>
-    
-    <script src="scripts/unsaved_changes.js"></script>
-    <script src="scripts/settings.js"></script>
-    <script src="scripts/document_title.js"></script>
-    <script src="scripts/file_import.js"></script>
-    <script src="scripts/file_export.js"></script>
-    <script src="scripts/app_functions.js"></script>
-    <script src="scripts/navbar.js"></script>
-    <script src="scripts/modal.js"></script>
-    <script src="scripts/pane_resizer.js"></script>
-    <script src="scripts/shortcuts.js"></script>
-    <script src="scripts/main.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text2MindMap</title>
+  <link rel="shortcut icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/app.css" />
 </head>
-
 <body>
-	<div class="wrapper">
-		<div class="navbar">
-			<ul>
-				<li class="navbar-item">
-					<div class="document-title-container">
-						<input class="document-title-input">
-						<div class="document-title-mirror"></div>
-					</div>
-				</li>
-				<li class="navbar-item navbar-button navbar-dropdown">
-					<a href="#">File</a>
-					<ul class="dropdown-content">
-						<li><a href="#" id="file-new"><i class="fa fa-file fa-fw"></i>New<span class="dropdown-shortcut">Ctrl+N</span></a></li>
-						<li><a href="#" id="file-open"><i class="fa fa-upload fa-fw"></i>Open...<span class="dropdown-shortcut">Ctrl+O</span></a></li>
-						<li><a href="#" id="file-save"><i class="fa fa-save fa-fw"></i>Save...<span class="dropdown-shortcut">Ctrl+S</span></a></li>
-						<li><a href="#" id="file-rename"><svg/>Rename...<span class="dropdown-shortcut"></span></a></li>
-					</ul>
-				</li>
-				<li class="navbar-item navbar-button navbar-dropdown">
-					<a href="#">Mind Map</a>
-					<ul class="dropdown-content">
-						<li><a href="#" id="mindmap-lock-all"><i class="fa fa-lock fa-fw"></i>Lock all<span class="dropdown-shortcut"></span></a></li>
-						<li><a href="#" id="mindmap-unlock-all"><i class="fa fa-unlock fa-fw"></i>Unlock all<span class="dropdown-shortcut"></span></a></li>
-						<li class="dropdown-divider"></li>
-						<li><a href="#" id="file-preferences"><i class="fa fa-cogs fa-fw"></i>Preferences</a></li>
-					</ul>
-				</li>
-				<a href="https://twitter.com/TobLoef" class="navbar-item navbar-icon">
-					<i class="fab fa-twitter"></i>
-				</a>
-				<a href="http://eepurl.com/dpN4zb" target="_blank" class="navbar-item navbar-text">
-					Subscribe to newsletter
-				</a>
-			</ul>
-		</div>
+<header class="navbar" role="banner">
+  <div class="navbar-left">
+    <div class="navbar-logo" aria-label="Text2MindMap">
+      <svg width="26" height="26" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <circle cx="14" cy="14" r="4" fill="currentColor"/>
+        <circle cx="4" cy="8" r="2.5" fill="currentColor" opacity=".7"/>
+        <circle cx="4" cy="20" r="2.5" fill="currentColor" opacity=".7"/>
+        <circle cx="24" cy="5" r="2.5" fill="currentColor" opacity=".7"/>
+        <circle cx="24" cy="14" r="2.5" fill="currentColor" opacity=".7"/>
+        <circle cx="24" cy="23" r="2.5" fill="currentColor" opacity=".7"/>
+        <line x1="10.2" y1="12.2" x2="6.5" y2="9.5" stroke="currentColor" stroke-width="1.5" opacity=".5"/>
+        <line x1="10.2" y1="15.8" x2="6.5" y2="18.5" stroke="currentColor" stroke-width="1.5" opacity=".5"/>
+        <line x1="17.8" y1="12.5" x2="21.5" y2="6.5" stroke="currentColor" stroke-width="1.5" opacity=".5"/>
+        <line x1="18" y1="14" x2="21.5" y2="14" stroke="currentColor" stroke-width="1.5" opacity=".5"/>
+        <line x1="17.8" y1="15.5" x2="21.5" y2="21.5" stroke="currentColor" stroke-width="1.5" opacity=".5"/>
+      </svg>
+      <span>Text2MindMap</span>
+    </div>
+    <nav class="nav-menu" role="navigation" aria-label="Main menu">
+      <div class="menu-item" data-menu="file">
+        <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">File</button>
+        <ul class="dropdown" role="menu">
+          <li role="menuitem"><button id="cmd-new">New <span class="shortcut">Ctrl+N</span></button></li>
+          <li role="menuitem"><button id="cmd-open">Open… <span class="shortcut">Ctrl+O</span></button></li>
+          <li role="menuitem"><button id="cmd-save-txt">Save as .txt <span class="shortcut">Ctrl+S</span></button></li>
+          <li role="menuitem"><button id="cmd-save-svg">Export as SVG</button></li>
+          <li class="menu-divider" role="separator"></li>
+          <li role="menuitem"><button id="cmd-rename">Rename…</button></li>
+        </ul>
+      </div>
+      <div class="menu-item" data-menu="view">
+        <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">View</button>
+        <ul class="dropdown" role="menu">
+          <li role="menuitem"><button id="cmd-zoom-in">Zoom In <span class="shortcut">Ctrl++</span></button></li>
+          <li role="menuitem"><button id="cmd-zoom-out">Zoom Out <span class="shortcut">Ctrl+−</span></button></li>
+          <li role="menuitem"><button id="cmd-zoom-fit">Fit to Screen <span class="shortcut">Ctrl+0</span></button></li>
+          <li class="menu-divider" role="separator"></li>
+          <li role="menuitem"><button id="cmd-toggle-editor">Toggle Editor <span class="shortcut">Ctrl+E</span></button></li>
+        </ul>
+      </div>
+      <div class="menu-item" data-menu="map">
+        <button class="menu-trigger" aria-haspopup="true" aria-expanded="false">Mind Map</button>
+        <ul class="dropdown" role="menu">
+          <li role="menuitem"><button id="cmd-preferences">Preferences…</button></li>
+          <li role="menuitem"><button id="cmd-help">Keyboard Shortcuts <span class="shortcut">?</span></button></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="navbar-center">
+    <div class="doc-title-wrap">
+      <input class="doc-title-input" id="doc-title" type="text" value="Untitled Document" spellcheck="false" aria-label="Document title" />
+      <div class="doc-title-mirror" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="navbar-right">
+    <button class="icon-btn" id="btn-theme-toggle" aria-label="Switch to dark mode" title="Toggle dark/light mode">
+      <svg id="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="autosave-badge" id="autosave-badge" title="Autosave status">
+      <span class="dot"></span><span class="label">Saved</span>
+    </div>
+  </div>
+</header>
 
-		<div id="pane-container">
-			<div id="editor-pane">
-                <div id="editor">
-                        <div class="collapse-button" id="editor-collapse-button" style="visibility: visible;left: calc(100% - 29px);">
-                                <div>
-                                    <i class="fa fa-fw fa-chevron-left"></i>
-                                </div>
-                            </div>
-                            <textarea id="textArea" wrap="off" exp></textarea>
-                </div>
-			</div>
-			<div id="viewer-pane">
-				<div class="collapse-button" id="viewer-collapse-button" style="visibility: hidden;">
-					<div>
-						<i class="fa fa-fw fa-chevron-right"></i>
-					</div>
-				</div>
-				<div id="dragbar"></div>
-				<div id="viewer-container">
-					<div id="stageHolder"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal-container">
-		<div class="modal" id="settings-modal">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<span class="modal-title">Preferences</span>
-						<button class="close-button close-modal">&times;</button>
-						<ul class="modal-tabs">
-							<li data-tab="setting-tab-general" class="active">General</li>
-						</ul>
-					</div>
-					<div class="modal-body">
-						<div class="tab-content active" id="setting-tab-general">
-                            <form>
-								<div class="form-group">
-									<label class="control-label">Lock after moving</label>
-									<div class="checkbox-control">
-										<input type="checkbox" id="lockAfterMoving" checked="true">
-										<label for="lockAfterMoving">Freeze a node after it has been moved</label>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="control-label">Color mode</label>
-									<select id="coloringMode">
-										<option value="2">Branch</option>
-										<option value="1">Level</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label class="control-label">Colors</label>
-									<div id="colorsdiv" class="form-div"></div>
-								</div>
-                            </form>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button class="button close-modal">Cancel</button>
-						<button class="button dark" id="modal-settings-save">
-							<i class="fa fa-save fa-lg"></i>Save
-						</button>
-					</div>
-				</div>
-			</div>
-			<div class="modal-backdrop close-modal"></div>
-		</div>
-	</div>
-	<input id="file-input" type="file" accept=".txt">
+<main class="pane-container" id="pane-container" role="main">
+  <section class="editor-pane" id="editor-pane" aria-label="Text editor">
+    <button class="collapse-btn" id="editor-collapse-btn" aria-label="Collapse editor" title="Collapse editor">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <textarea id="textArea" spellcheck="false" wrap="off" aria-label="Mind map text input"
+      placeholder="Type your mind map here...&#10;Use TAB to indent, SHIFT+TAB to unindent."></textarea>
+  </section>
+
+  <div class="resize-handle" id="resize-handle" role="separator" aria-orientation="vertical" aria-label="Resize panels"></div>
+
+  <section class="viewer-pane" id="viewer-pane" aria-label="Mind map viewer">
+    <button class="collapse-btn viewer-expand-btn" id="viewer-expand-btn" aria-label="Expand editor" title="Expand editor" style="display:none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="zoom-controls" role="group" aria-label="Zoom controls">
+      <button class="zoom-btn" id="zoom-in-btn" aria-label="Zoom in" title="Zoom in">+</button>
+      <button class="zoom-btn" id="zoom-out-btn" aria-label="Zoom out" title="Zoom out">−</button>
+      <button class="zoom-btn zoom-fit" id="zoom-fit-btn" aria-label="Fit to screen" title="Fit to screen">Fit</button>
+      <span class="zoom-label" id="zoom-label" aria-live="polite">100%</span>
+    </div>
+    <svg id="mindmap-svg" aria-label="Mind map visualization"></svg>
+    <div class="empty-state hidden" id="empty-state" aria-live="polite">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <p>Start typing in the editor to build your mind map</p>
+    </div>
+  </section>
+</main>
+
+<!-- Preferences Modal -->
+<div class="modal-overlay" id="pref-modal" role="dialog" aria-modal="true" aria-labelledby="pref-title" hidden>
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="pref-title">Preferences</h2>
+      <button class="modal-close" data-close="pref-modal" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row"><label for="pref-color-mode">Color mode</label><select id="pref-color-mode"><option value="branch">By branch</option><option value="level">By level</option></select></div>
+      <div class="form-row"><label for="pref-layout">Layout</label><select id="pref-layout"><option value="radial">Radial</option><option value="tree">Tree (top-down)</option><option value="lr">Tree (left-right)</option></select></div>
+      <div class="form-row"><label for="pref-font-size">Editor font size</label><select id="pref-font-size"><option value="12">12px</option><option value="13">13px</option><option value="14" selected>14px</option><option value="15">15px</option><option value="16">16px</option><option value="18">18px</option></select></div>
+      <div class="form-row checkbox-row"><input type="checkbox" id="pref-curved" /><label for="pref-curved">Curved connector lines</label></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-close="pref-modal">Cancel</button>
+      <button class="btn btn-primary" id="pref-save">Save</button>
+    </div>
+  </div>
+  <div class="modal-backdrop" data-close="pref-modal"></div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal-overlay" id="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+  <div class="modal-box modal-narrow">
+    <div class="modal-header">
+      <h2 id="help-title">Keyboard Shortcuts</h2>
+      <button class="modal-close" data-close="help-modal" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <table class="shortcuts-table">
+        <thead><tr><th>Action</th><th>Shortcut</th></tr></thead>
+        <tbody>
+          <tr><td>New document</td><td>Ctrl+N</td></tr>
+          <tr><td>Open file</td><td>Ctrl+O</td></tr>
+          <tr><td>Save as .txt</td><td>Ctrl+S</td></tr>
+          <tr><td>Indent</td><td>Tab</td></tr>
+          <tr><td>Unindent</td><td>Shift+Tab</td></tr>
+          <tr><td>Zoom in</td><td>Ctrl++</td></tr>
+          <tr><td>Zoom out</td><td>Ctrl+−</td></tr>
+          <tr><td>Fit to screen</td><td>Ctrl+0</td></tr>
+          <tr><td>Toggle editor</td><td>Ctrl+E</td></tr>
+          <tr><td>Show shortcuts</td><td>?</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-backdrop" data-close="help-modal"></div>
+</div>
+
+<input type="file" id="file-input" accept=".txt" style="display:none" aria-hidden="true" />
+
+<!-- D3 v7 (replaces legacy D3 v3 + KineticJS + jQuery) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="scripts/settings.js"></script>
+<script src="scripts/parser.js"></script>
+<script src="scripts/renderer.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/main.js"></script>
 </body>
-
 </html>

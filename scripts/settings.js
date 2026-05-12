@@ -1,67 +1,26 @@
-// Helper functions for saving and loading user settings with localstorage.
-settings = (function() {
-	// Used for seperating settings on the same domain
-	const prefix = "text2mindmap";
-	
-	// Default values for various user settings.
-	const defaultValues = {
-		"documentContent": "Text2MindMap\n\tTurn tab-indented lists into mind maps\n\t\tPress Tab to indent lines\n\t\tPress Shift + Tab to unindent lines\n\tDrag nodes to re-organize them\n\tRight-click the mindmap to save it as an image\n\tThis project is based on the now dead site Text2MindMap.com",
-		"documentTitle": "Untitled Document"
-	};
-
-	// Used for converting settings values to actual font-familys.
-	const fontFamilyMap = {
-		"monospace": "monospace",
-		"sans-serif": "sans-serif",
-		"serif": "serif",
-	};
-
-	// Get the setting with the specified key. If the setting is null, use the default value.
-	function getSetting(key) {
-		let setting;
-		try {
-			setting = JSON.parse(localStorage.getItem(prefix+key));
-		} catch (exception) {
-			// Ignored
-		}
-		if (!setting || setting == "") {
-			setting = getDefaultValue(key);
-			setSetting(key, setting);
-		}
-		return setting;
-	}
-
-	// Set the setting with the specified key to the specified value.
-	function setSetting(key, value) {
-		if (!value) {
-			value = getDefaultValue(key);
-		}
-		try {
-			localStorage.setItem(prefix+key, JSON.stringify(value));
-		} catch (exception) {
-			console.error(`Error saving setting.\nKey: ${key}\nValue: ${value}\n`);
-		}
-	}
-
-	// Get the default value of the setting with the specified key.
-	function getDefaultValue(key) {
-		if (key in defaultValues) {
-			return defaultValues[key];
-		}
-	}
-
-	// Reset all the settings to their default values.
-	function reset() {
-		for (let key in defaultValues) {
-			setSetting(key, getDefaultValue(key));
-		}
-	}
-
-	return {
-		getSetting,
-		setSetting,
-		fontFamilyMap,
-		getDefaultValue,
-		reset
-	};
-}());
+// settings.js — persists user preferences to localStorage
+const Settings = (() => {
+  const PREFIX = 't2mm_';
+  const DEFAULTS = {
+    documentContent: 'Mind Map\n\tIdeas\n\t\tFirst idea\n\t\tSecond idea\n\tGoals\n\t\tShort term\n\t\tLong term\n\tNotes\n\t\tSomething to remember',
+    documentTitle:   'Untitled Document',
+    colorMode:       'branch',
+    layout:          'radial',
+    fontSize:        '14',
+    curvedLines:     true,
+    theme:           'light',
+  };
+  function get(key) {
+    try {
+      const raw = localStorage.getItem(PREFIX + key);
+      if (raw === null) return DEFAULTS[key];
+      return JSON.parse(raw);
+    } catch { return DEFAULTS[key]; }
+  }
+  function set(key, value) {
+    try { localStorage.setItem(PREFIX + key, JSON.stringify(value)); }
+    catch (e) { console.warn('Settings: could not save', key, e); }
+  }
+  function getDefault(key) { return DEFAULTS[key]; }
+  return { get, set, getDefault };
+})();
