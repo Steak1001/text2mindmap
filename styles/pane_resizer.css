@@ -27,7 +27,7 @@
 .collapse-button > div {
 	position: absolute;
 	z-index: 10;
-	color: black;
+	color: #666;
 	width: 25px;
 	cursor: pointer;
 	padding: 20px 0;
