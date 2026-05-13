@@ -2,7 +2,8 @@
 (function() {
 	const STORAGE_KEY = 'text2mindmap_collapsed_nodes';
 	let collapsedNodes = new Set();
-	let nodeMap = new Map(); // Map of node text to node object
+	let nodeMap = new Map();
+	let currentHoveredNode = null;
 
 	const nodeCollapse = {
 		getCollapsedNodes() {
@@ -51,7 +52,6 @@
 	$(document).ready(function() {
 		nodeCollapse.load();
 
-		// Hook into mindmap rendering to inject collapse buttons and filter nodes
 		const originalRender = mindmap.render;
 		let isRendering = false;
 
@@ -59,130 +59,150 @@
 			if (isRendering) return;
 			isRendering = true;
 
-			// Clear node map before rendering
 			nodeMap.clear();
+			currentHoveredNode = null;
+			removeCollapseButton();
 
-			// Call original render
 			const result = originalRender.call(mindmap);
 
-			// After render, add collapse buttons to nodes and set up click handlers
 			setTimeout(() => {
-				addCollapseButtons();
+				setupNodeHoverHandlers();
 				isRendering = false;
 			}, 100);
 
 			return result;
 		};
 
-		function addCollapseButtons() {
-			const canvas = document.querySelector('#stageHolder canvas');
-			if (!canvas) return;
-
-			// Get the KineticJS stage if available
+		function setupNodeHoverHandlers() {
 			try {
-				// Try to find the stage through Kinetic global
-				if (window.Kinetic && window.Kinetic.stages && window.Kinetic.stages.length > 0) {
-					const stage = window.Kinetic.stages[0];
-					const layer = stage.getLayer();
+				if (!window.Kinetic || !window.Kinetic.stages || window.Kinetic.stages.length === 0) {
+					return;
+				}
 
-					if (layer && layer.children) {
-						// Process each shape/group on the layer
-						layer.children.forEach(shape => {
-							// Skip if already has collapse button indicator
-							if (shape._collapseProcessed) return;
-							shape._collapseProcessed = true;
+				const stage = window.Kinetic.stages[0];
+				const layer = stage.getLayer();
 
-							// Try to get node text/id from the shape
-							const nodeId = getNodeId(shape);
-							if (nodeId) {
-								nodeMap.set(nodeId, shape);
+				if (!layer || !layer.children) return;
 
-								// Add hover listener for collapse button display
-								shape.on('mouseover', function() {
-									if (nodeHasChildren(shape)) {
-										showCollapseButton(shape, nodeId);
-									}
-								});
+				layer.children.forEach(shape => {
+					if (shape._collapseHoverSetup) return;
+					shape._collapseHoverSetup = true;
 
-								shape.on('mouseout', function() {
-									hideCollapseButton(shape);
-								});
+					const nodeId = getNodeIdentifier(shape);
+					if (!nodeId) return;
 
-								shape.on('click', function(e) {
-									// Only toggle if clicking on the collapse button
-									if (e.target && e.target._isCollapseButton) {
-										e.cancelBubble = true;
-										nodeCollapse.toggleNode(nodeId);
-									}
-								});
-							}
-						});
-					}
+					nodeMap.set(nodeId, shape);
+
+					shape.on('mouseover', function(e) {
+						currentHoveredNode = nodeId;
+						const hasChildren = checkNodeHasChildren(shape);
+						if (hasChildren) {
+							showCollapseButton(nodeId, shape);
+						}
+					});
+
+					shape.on('mouseout', function() {
+						if (currentHoveredNode === nodeId) {
+							currentHoveredNode = null;
+							removeCollapseButton();
+						}
+					});
+				});
+			} catch (e) {
+				console.debug('Node hover setup error:', e);
+			}
+		}
+
+		function getNodeIdentifier(shape) {
+			try {
+				if (shape.attrs && shape.attrs.text) {
+					return shape.attrs.text.toString().trim();
+				}
+				if (shape.getText && typeof shape.getText === 'function') {
+					const text = shape.getText();
+					return text ? text.toString().trim() : null;
+				}
+				if (shape.id) {
+					return shape.id.toString();
 				}
 			} catch (e) {
-				console.debug('Kinetic interaction not available:', e);
+				console.debug('Could not get node identifier:', e);
 			}
+			return null;
 		}
 
-		function getNodeId(shape) {
-			// Try various ways to identify the node
-			if (shape.attrs && shape.attrs.text) {
-				return shape.attrs.text;
-			}
-			if (shape.getText && typeof shape.getText === 'function') {
-				return shape.getText();
-			}
-			return shape.id || null;
-		}
-
-		function nodeHasChildren(shape) {
-			// This is a heuristic - nodes with children will have certain properties
-			// In the KineticJS implementation, child nodes appear in certain positions
+		function checkNodeHasChildren(shape) {
 			try {
-				const parent = shape.getParent();
-				const siblings = parent ? parent.children : [];
-				// A node has children if there are more nodes in the hierarchy
-				return siblings.length > 1;
+				const layer = shape.getLayer();
+				if (!layer || !layer.children) return false;
+
+				const shapeIndex = layer.children.indexOf(shape);
+				if (shapeIndex === -1) return false;
+
+				const nextShape = layer.children[shapeIndex + 1];
+				if (!nextShape) return false;
+
+				const currentX = shape.getX ? shape.getX() : shape.x;
+				const nextX = nextShape.getX ? nextShape.getX() : nextShape.x;
+
+				return nextX > currentX;
 			} catch (e) {
+				console.debug('Could not check for children:', e);
 				return false;
 			}
 		}
 
-		function showCollapseButton(shape, nodeId) {
+		function showCollapseButton(nodeId, shape) {
+			removeCollapseButton();
+
 			try {
-				// Create a simple visual indicator on the node
-				const stage = shape.getStage();
-				if (!stage) return;
+				const canvas = document.querySelector('#stageHolder canvas');
+				if (!canvas) return;
 
 				const isCollapsed = nodeCollapse.isNodeCollapsed(nodeId);
-				const icon = isCollapsed ? '+' : '−';
+				const button = document.createElement('button');
+				button.className = 'node-collapse-btn';
+				button.id = 'active-node-collapse-btn';
+				button.innerHTML = isCollapsed ? '+' : '−';
+				button.title = isCollapsed ? 'Expand' : 'Collapse';
 
-				// Draw a small circle with +/- on the node
-				// This is simplified; a full implementation would draw actual UI
-				console.debug('Show collapse button for', nodeId, 'collapsed:', isCollapsed);
+				button.addEventListener('click', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					nodeCollapse.toggleNode(nodeId);
+				});
+
+				button.addEventListener('mouseout', function() {
+					setTimeout(() => {
+						if (currentHoveredNode === nodeId) {
+							removeCollapseButton();
+						}
+					}, 100);
+				});
+
+				const container = document.querySelector('#viewer-container');
+				if (container) {
+					container.appendChild(button);
+					button.style.position = 'fixed';
+					button.style.top = '60px';
+					button.style.right = '30px';
+				}
 			} catch (e) {
 				console.debug('Could not show collapse button:', e);
 			}
 		}
 
-		function hideCollapseButton(shape) {
-			// Clean up collapse button UI
+		function removeCollapseButton() {
+			const btn = document.getElementById('active-node-collapse-btn');
+			if (btn) btn.remove();
 		}
 
-		// Add keyboard shortcut to collapse/expand focused node
 		shortcuts.addBinding('Ctrl+/', function() {
-			// Get the currently "selected" or first node
-			try {
-				const nodeId = nodeMap.keys().next().value;
-				if (nodeId) {
-					nodeCollapse.toggleNode(nodeId);
-				}
-			} catch (e) {
-				console.debug('Could not toggle node', e);
+			if (currentHoveredNode) {
+				nodeCollapse.toggleNode(currentHoveredNode);
 			}
 		});
 
-		// Add menu item or button for clearing all collapses
 		$(document).on('click', '#mindmap-expand-all', function(e) {
 			e.preventDefault();
 			nodeCollapse.clearAll();
@@ -190,6 +210,6 @@
 		});
 	});
 
-	// Export for testing/debugging
 	window.nodeCollapse = nodeCollapse;
 }());
+

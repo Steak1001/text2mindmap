@@ -60,6 +60,7 @@
 	<script src="scripts/features/dark_mode.js"></script>
 	<script src="scripts/features/svg_export.js"></script>
 	<script src="scripts/features/find_replace.js"></script>
+	<script src="scripts/features/zoom_controls.js"></script>
 </head>
 
 <body>
@@ -111,6 +112,16 @@
 						<li><a href="#" id="file-preferences"><i class="fa fa-cogs fa-fw"></i>Preferences</a></li>
 					</ul>
 				</li>
+				<!-- Zoom Controls -->
+				<li class="navbar-item navbar-button" id="zoom-in-btn" title="Zoom In (Ctrl+Plus)">
+					<a href="#"><i class="fa fa-plus fa-fw"></i></a>
+				</li>
+				<li class="navbar-item navbar-button" id="zoom-out-btn" title="Zoom Out (Ctrl+Minus)">
+					<a href="#"><i class="fa fa-minus fa-fw"></i></a>
+				</li>
+				<li class="navbar-item navbar-button" id="zoom-reset-btn" title="Reset Zoom (Ctrl+0)">
+					<a href="#"><i class="fa fa-expand fa-fw"></i></a>
+				</li>
 				<!-- Dark mode toggle -->
 				<li class="navbar-item navbar-button" id="dark-mode-toggle" title="Toggle dark mode">
 					<a href="#"><i class="fa fa-moon fa-fw"></i></a>
@@ -144,6 +155,9 @@
 				</div>
 				<div id="dragbar"></div>
 				<div id="viewer-container">
+					<button id="canvas-copy-btn" class="canvas-floating-btn" title="Copy Image (Ctrl+Shift+C)">
+						<i class="fa fa-copy"></i>
+					</button>
 					<div id="stageHolder"></div>
 				</div>
 			</div>

@@ -8,21 +8,25 @@
 
 	const zoomControls = {
 		getStage() {
-			if (!stage) {
-				// Try to get the stage from KineticJS through the mindmap object
-				// The mindmap object should have access to the stage
-				stage = mindmap.getStage ? mindmap.getStage() : null;
+			if (stage) return stage;
+			try {
+				if (window.Kinetic && window.Kinetic.stages && window.Kinetic.stages.length > 0) {
+					stage = window.Kinetic.stages[0];
+					return stage;
+				}
+			} catch (e) {
+				console.debug('Stage lookup error:', e);
 			}
-			return stage;
+			return null;
 		},
 
 		setZoom(newLevel) {
 			newLevel = Math.max(MIN_ZOOM, Math.min(newLevel, MAX_ZOOM));
 			zoomLevel = newLevel;
 			const currentStage = zoomControls.getStage();
-			if (currentStage) {
+			if (currentStage && currentStage.scale) {
 				currentStage.scale({ x: zoomLevel, y: zoomLevel });
-				currentStage.draw();
+				if (currentStage.draw) currentStage.draw();
 			}
 		},
 
@@ -49,8 +53,23 @@
 			'Ctrl+Plus': zoomControls.zoomIn,
 			'Ctrl+Minus': zoomControls.zoomOut,
 			'Ctrl+0': zoomControls.resetZoom,
-			// Also handle = key (shifted +)
 			'Ctrl+Shift+Equal': zoomControls.zoomIn
+		});
+
+		// Navbar button click handlers
+		$('#zoom-in-btn').on('click', function(e) {
+			e.preventDefault();
+			zoomControls.zoomIn();
+		});
+
+		$('#zoom-out-btn').on('click', function(e) {
+			e.preventDefault();
+			zoomControls.zoomOut();
+		});
+
+		$('#zoom-reset-btn').on('click', function(e) {
+			e.preventDefault();
+			zoomControls.resetZoom();
 		});
 
 		// Mouse wheel zoom (Ctrl+Scroll)
@@ -65,24 +84,24 @@
 			}
 		});
 
-		// Get stage reference when mindmap is first rendered
+		// Capture stage after mindmap renders
 		const originalRender = mindmap.render;
 		mindmap.render = function() {
 			const result = originalRender.call(mindmap);
-			// Try to capture the stage after render
-			if (!stage) {
-				// Try multiple ways to get the stage
-				if (mindmap.getStage) {
-					stage = mindmap.getStage();
-				} else if (window.Kinetic && window.Kinetic.Stage) {
-					// Look for active stage in Kinetic
-					stage = Kinetic.stages ? Kinetic.stages[0] : null;
+			setTimeout(() => {
+				try {
+					if (!stage && window.Kinetic && window.Kinetic.stages && window.Kinetic.stages.length > 0) {
+						stage = window.Kinetic.stages[0];
+					}
+				} catch (e) {
+					console.debug('Stage capture failed:', e);
 				}
-			}
+			}, 50);
 			return result;
 		};
 	});
 
-	// Export for testing/debugging
 	window.zoomControls = zoomControls;
 }());
+
+

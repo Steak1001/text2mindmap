@@ -9,4 +9,10 @@
 #viewer-container {
 	height: 100%;
 	display: flex;
+	position: relative;
+}
+
+#stageHolder {
+	flex: 1;
+	overflow: hidden;
 }

@@ -71,6 +71,11 @@
 			canvasExport.copyToClipboard();
 		});
 
+		$(document).on('click', '#canvas-copy-btn', function(e) {
+			e.preventDefault();
+			canvasExport.copyToClipboard();
+		});
+
 		$(document).on('click', '#file-export-png', function(e) {
 			e.preventDefault();
 			canvasExport.exportPNG();
