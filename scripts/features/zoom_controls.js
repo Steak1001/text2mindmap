@@ -1,32 +1,34 @@
-// Zoom controls for the mindmap canvas
+// Zoom controls using CSS transforms (safer than KineticJS stage manipulation)
 (function() {
 	let zoomLevel = 1;
 	const MIN_ZOOM = 0.5;
 	const MAX_ZOOM = 3;
 	const ZOOM_STEP = 0.1;
-	let stage = null;
+	const STORAGE_KEY = 'text2mindmap_zoom_level';
 
 	const zoomControls = {
-		getStage() {
-			if (stage) return stage;
-			try {
-				if (window.Kinetic && window.Kinetic.stages && window.Kinetic.stages.length > 0) {
-					stage = window.Kinetic.stages[0];
-					return stage;
-				}
-			} catch (e) {
-				console.debug('Stage lookup error:', e);
-			}
-			return null;
-		},
-
 		setZoom(newLevel) {
 			newLevel = Math.max(MIN_ZOOM, Math.min(newLevel, MAX_ZOOM));
 			zoomLevel = newLevel;
-			const currentStage = zoomControls.getStage();
-			if (currentStage && currentStage.scale) {
-				currentStage.scale({ x: zoomLevel, y: zoomLevel });
-				if (currentStage.draw) currentStage.draw();
+
+			const $stageHolder = $('#stageHolder');
+			if ($stageHolder.length) {
+				// Use CSS transform to scale the entire canvas
+				$stageHolder.css('transform', `scale(${zoomLevel})`);
+				$stageHolder.css('transform-origin', 'top left');
+
+				// Save zoom level
+				try {
+					localStorage.setItem(STORAGE_KEY, zoomLevel);
+				} catch (e) {
+					console.debug('Could not save zoom level:', e);
+				}
+
+				// Update zoom display if it exists
+				const $zoomDisplay = $('#zoom-level-display');
+				if ($zoomDisplay.length) {
+					$zoomDisplay.text(Math.round(zoomLevel * 100) + '%');
+				}
 			}
 		},
 
@@ -43,31 +45,53 @@
 		},
 
 		getZoomLevel() {
-			return Math.round(zoomLevel * 100);
+			return zoomLevel;
 		}
 	};
 
 	$(document).ready(function() {
+		// Load saved zoom level
+		try {
+			const saved = localStorage.getItem(STORAGE_KEY);
+			if (saved) {
+				zoomControls.setZoom(parseFloat(saved));
+			}
+		} catch (e) {
+			console.debug('Could not load zoom level:', e);
+		}
+
 		// Keyboard bindings
 		shortcuts.addBindings({
-			'Ctrl+Plus': zoomControls.zoomIn,
-			'Ctrl+Minus': zoomControls.zoomOut,
-			'Ctrl+0': zoomControls.resetZoom,
-			'Ctrl+Shift+Equal': zoomControls.zoomIn
+			'Ctrl+Plus': function(e) {
+				e.preventDefault();
+				zoomControls.zoomIn();
+			},
+			'Ctrl+Minus': function(e) {
+				e.preventDefault();
+				zoomControls.zoomOut();
+			},
+			'Ctrl+0': function(e) {
+				e.preventDefault();
+				zoomControls.resetZoom();
+			},
+			'Ctrl+Shift+Equal': function(e) {
+				e.preventDefault();
+				zoomControls.zoomIn();
+			}
 		});
 
 		// Navbar button click handlers
-		$('#zoom-in-btn').on('click', function(e) {
+		$(document).on('click', '#zoom-in-btn', function(e) {
 			e.preventDefault();
 			zoomControls.zoomIn();
 		});
 
-		$('#zoom-out-btn').on('click', function(e) {
+		$(document).on('click', '#zoom-out-btn', function(e) {
 			e.preventDefault();
 			zoomControls.zoomOut();
 		});
 
-		$('#zoom-reset-btn').on('click', function(e) {
+		$(document).on('click', '#zoom-reset-btn', function(e) {
 			e.preventDefault();
 			zoomControls.resetZoom();
 		});
@@ -84,24 +108,37 @@
 			}
 		});
 
-		// Capture stage after mindmap renders
-		const originalRender = mindmap.render;
-		mindmap.render = function() {
-			const result = originalRender.call(mindmap);
-			setTimeout(() => {
-				try {
-					if (!stage && window.Kinetic && window.Kinetic.stages && window.Kinetic.stages.length > 0) {
-						stage = window.Kinetic.stages[0];
+		// Touch pinch zoom support
+		let lastDistance = 0;
+		$(document).on('touchmove', function(e) {
+			if (e.touches.length === 2) {
+				e.preventDefault();
+
+				const touch1 = e.touches[0];
+				const touch2 = e.touches[1];
+				const distance = Math.hypot(
+					touch2.clientX - touch1.clientX,
+					touch2.clientY - touch1.clientY
+				);
+
+				if (lastDistance > 0) {
+					const delta = distance - lastDistance;
+					if (delta > 5) {
+						zoomControls.zoomIn();
+					} else if (delta < -5) {
+						zoomControls.zoomOut();
 					}
-				} catch (e) {
-					console.debug('Stage capture failed:', e);
 				}
-			}, 50);
-			return result;
-		};
+
+				lastDistance = distance;
+			}
+		}, { passive: false });
+
+		$(document).on('touchend', function() {
+			lastDistance = 0;
+		});
 	});
 
+	// Export for testing/debugging
 	window.zoomControls = zoomControls;
 }());
-
-
